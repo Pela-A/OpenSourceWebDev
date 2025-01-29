@@ -1,0 +1,47 @@
+<h1>Employee List</h1>
+
+{{#if error}}
+    <p style="color: red;">{{error}}</p>
+{{else}}
+    {{#if employees.length}}
+        <h2>Enter here</h2>
+        <table border="1" cellpadding="10" class="table mx-auto table-striped">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Department</th>
+                    <th>Start Date</th>
+                    <th>Job Title</th>
+                    <th>Salary</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each employees}}
+                <tr>
+                    <td>
+                        <a href="/updateview?id={{this._id}}">
+                            <button>Update</button>
+                        </a>
+                    </td>
+                    <td>{{this.firstName}}</td>
+                    <td>{{this.lastName}}</td>
+                    <td>{{this.department}}</td>
+                    <td>{{this.startDate}}</td>
+                    <td>{{this.jobTitle}}</td>
+                    <td>${{this.salary}}</td>
+                    <td>
+                        <form action="/delete?id={{this._id}}&_method=DELETE" method="POST">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    {{else}}
+        <p>No employees found.</p>
+    {{/if}}
+{{/if}}

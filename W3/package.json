@@ -1,0 +1,22 @@
+{
+  "name": "opensourceweb",
+  "version": "1.0.0",
+  "description": "This is a demo or creating a node app",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "keywords": [
+    "Alexander",
+    "Pela"
+  ],
+  "author": "Alex",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.3",
+    "express": "^4.21.2",
+    "express-handlebars": "^8.0.1",
+    "mongoose": "^8.9.5"
+  }
+}
