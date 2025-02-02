@@ -1,12 +1,21 @@
+require("dotenv").config();
 const express = require("express");
+const session = require("express-session");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const exphbs = require("express-handlebars");
 const path = require("path");
 const { allowedNodeEnvironmentFlags } = require("process");
+const passport = require("passport");
+const flash = require("connect-flash");
+
+//const Game = require("./models/Game")
 
 const app = express();
 const PORT = 3000
+
+//Passport Configuration
+require("./config/passport")(passport);
 
 // Set Handlebars as our templating engine
 app.engine("handlebars", exphbs.engine())
@@ -20,6 +29,33 @@ app.use(express.static(path.join(__dirname,"public")));
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 
+//Setup Express-Session Middleware
+app.use(session({
+    secret:"secret",
+    resave:false,
+    saveUninitialized:true
+}))
+
+//Setup Passport Middleware
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Setup Flash Messaging
+app.use(flash())
+
+// Global variables for Flash messages
+app.use((req,res,next)=>{
+    res.locals.success_msg = req.flash("success_msg")
+    res.locals.error_msg = req.flash("error_msg")
+    res.locals.error = req.flash("error")
+    res.locals.user = req.user || null
+    next()
+})
+
+// Required Route Router example
+app.use("/", require("./routes/auth").router)
+app.use("/", require("./routes/crud"))
+
 // MongoDB Database connection
 const mongoURI = "mongodb://localhost:27017/gamelibrary"
 mongoose.connect(mongoURI);
@@ -31,86 +67,10 @@ db.once("open", ()=>{
     console.log("Connected to MongoDB")
 })
 
-// Mongoose Schema and Model
-const gameSchema = new mongoose.Schema({
-    gamename:String,
-    developer:String
-})
 
-const Game = mongoose.model("Game", gameSchema, "favoritegames");
 
 // CRUD app examples Connection to database route examples below
 
-// GET route to get all data from database
-app.get("/games", async (req,res) => {
-    try{
-        const games = await Game.find();
-        res.json(games)
-    }
-    catch(err){
-        res.status(500).json({error: "Failed to fetch game data"})
-    }
-})
-
-// GET route to get a single entry from database
-app.get("/games/:id", async (req,res)=>{
-    try{
-        const game = await Game.findById(req.params.id)
-        if(!game){
-            return res.status(404).json({error:"Game not found"})
-        }
-        res.json(game)
-    }
-    catch(err){
-        res.status(500).json({error: "Failed to fetch game data"})
-    }
-})
-
-// POST route
-app.post("/addgame", async (req,res)=>{
-    try{
-        const newGame = new Game(req.body)
-        const savedGame = await newGame.save()
-        res.status(201).json(savedGame)
-    }
-    catch(err){
-        res.status(500).json({error: "Failed to post game data"})
-    }
-})
-
-// PUT route
-app.put("/updategame/:id", (req,res)=>{
-    Game.findByIdAndUpdate(req.params.id, req.body, {
-        new:true,
-        runValidators:true
-    }).then((updatedgame)=>{
-        if(!updatedgame){
-            return res.status(404).json({error:"Game not found"})   
-        }
-        res.json(updatedgame)
-    }).catch((err)=>{
-        return res.status(400).json({error:"Failed to update game"})   
-    })
-})
-
-// DELETE route
-app.get("/deletegame", async (req,res)=>{
-    try{
-        const gamename = req.query
-        const game = await Game.find(gamename)
-
-        if(game.length === 0){
-            return res.status(404).json({error: "Failed to find the game"})
-        }
-        
-        const deletedGame = await Game.findOneAndDelete(gamename)
-        res.json({message:"Game deleted successfully"})
-    }
-    catch(err){
-        console.error(err);
-        res.status(404).json({error: "Game not found"})
-    }
-})
 
 //npm init makes package.json
 
@@ -151,6 +111,10 @@ app.get("/read-todo", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "read-todo.html"))
 })
 
+
+
+
+
 app.use((req, res) => {
     res.writeHead(301, {'Location': "http://" + req.headers['host'] + '/index' });
     res.end()
@@ -167,3 +131,4 @@ app.listen(PORT, ()=>{
 
 
 
+// npm install passport-local connect-flash dotenv

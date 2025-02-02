@@ -1,0 +1,26 @@
+<h2>Register New User</h2>
+
+{{#if errors.length}}
+  <ul class="list-unstyled text-center">
+    {{#each errors}}
+      <li>{{this.msg}}</li>
+    {{/each}}
+  </ul>
+{{/if}}
+
+
+<form action="/register" method="POST">
+    <label for="username">Create Username</label><br>
+    <input type="text" value="{{username}}" name="username" placeholder="Enter Username" required><br>
+
+    <label for="email">Email</label><br>
+    <input type="email" value="{{email}}"  name="email" placeholder="Enter Email" required><br>
+
+    <label for="password">Create Password</label><br>
+    <input type="password" value="{{password}}" name="password" placeholder="Enter Password" required><br>
+
+    <label for="password2">Confirm Password</label><br>
+    <input type="password" value="{{password2}}" name="password2" placeholder="Enter Password Again" required><br>
+
+    <button type="submit">Register</button>
+</form>
