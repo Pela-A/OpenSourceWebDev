@@ -73,7 +73,7 @@ db.once("open", ()=>{
 
 app.use((req, res) => {
     const destination = res.locals.user ? "/dashboard" : "/login";
-    res.writeHead(301, { 'Location': "http://" + req.headers['host'] + destination });
+    res.writeHead(301, { 'Location': "https://" + req.headers['host'] + destination });
     res.end();
 });
 
