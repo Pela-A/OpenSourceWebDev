@@ -1,18 +1,15 @@
 require("dotenv").config();
-
 const express = require("express");
 const session = require("express-session");
-
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const exphbs = require("express-handlebars");
 const path = require("path");
-
 const passport = require("passport");
 const flash = require("connect-flash");
 
 const app = express();
-const PORT = 3000
+const PORT =  process.env.PORT || 3000;
 
 // Had to add method override to perform delete as requested. Otherwise had to use an async function inside the viewemployee handlebars file
 const methodOverride = require('method-override');
@@ -25,7 +22,7 @@ require("./config/passport")(passport);
 // Set Handlebars as our templating engine
 app.engine("handlebars", exphbs.engine())
 app.set("view engine", "handlebars");
-app.set("views", "./views");
+app.set("views", path.join(__dirname, "views"));
 
 // Sets our static resources folder
 app.use(express.static(path.join(__dirname,"public")));
@@ -36,7 +33,7 @@ app.use(express.urlencoded({ extended: true }));
 
 //Setup Express-Session Middleware
 app.use(session({
-    secret:"secret",
+    secret:process.env.SESSION_SECRET,
     resave:false,
     saveUninitialized:true
 }))
@@ -63,7 +60,8 @@ app.use("/", require("./routes/auth").router)
 app.use("/", require("./routes/crud"))
 
 // MongoDB Database connection
-const mongoURI = "mongodb://localhost:27017/employeelibrary"
+const mongoURI = process.env.MONGO_URI; //||  "mongodb://localhost:27017/gamelibrary"
+console.log(mongoURI)
 mongoose.connect(mongoURI);
 const db = mongoose.connection;
 
@@ -75,7 +73,6 @@ db.once("open", ()=>{
 
 app.use((req, res) => {
     const destination = res.locals.user ? "/dashboard" : "/login";
-    
     res.writeHead(301, { 'Location': "http://" + req.headers['host'] + destination });
     res.end();
 });
@@ -85,7 +82,9 @@ app.get("/nodemon",(req,res)=>{
     res.sendStatus(500);
 })
 
-// Listen to PORT
+//Creates Listener on port 3000
 app.listen(PORT, ()=>{
-    console.log("Server running on port 3000.");
+    console.log(`Server running on port ${PORT}.`);
 })
+
+module.exports = app;

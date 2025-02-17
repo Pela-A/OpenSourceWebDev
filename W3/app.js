@@ -12,7 +12,7 @@ const flash = require("connect-flash");
 //const Game = require("./models/Game")
 
 const app = express();
-const PORT = 3000
+const PORT = process.env.PORT || 3000
 
 //Passport Configuration
 require("./config/passport")(passport);
@@ -20,7 +20,7 @@ require("./config/passport")(passport);
 // Set Handlebars as our templating engine
 app.engine("handlebars", exphbs.engine())
 app.set("view engine", "handlebars");
-app.set("views", "./views");
+app.set("views", path.join(__dirname, "./views"));
 
 // Sets our static resources folder
 app.use(express.static(path.join(__dirname,"public")));
@@ -129,6 +129,6 @@ app.listen(PORT, ()=>{
     console.log("Server running on port 3000.");
 })
 
-
+module.exports = app;
 
 // npm install passport-local connect-flash dotenv
