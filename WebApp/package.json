@@ -1,0 +1,21 @@
+{
+  "name": "opensourceweb",
+  "version": "1.0.0",
+  "description": "This is a demo or creating a websocket app",
+  "author": "Alex",
+  "license": "ISC",
+  "type": "commonjs",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "app.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "http": "^0.0.1-security",
+    "openai": "^4.85.4",
+    "socket.io": "^4.8.1",
+    "ws": "^8.18.0"
+  }
+}
