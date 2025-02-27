@@ -1,0 +1,29 @@
+# mutation {
+#   addUser(name: "Alex", email: "alex@neit.edu", age: 23) {
+#     id
+#     name
+#     email
+#     age
+#   }
+# }
+
+# mutation {
+#   updateUser(id: "67bfac358564c0707f07ce9a", name: "Alexander", email: "alex@neit.edu", age: 23) {
+#     id
+#     name
+#     email
+#     age
+#   }
+# }
+
+# mutation {
+#   deleteUser(id: "67bfac358564c0707f07ce9a")
+# }
+
+query{
+  users{
+    id
+    name
+    email
+  }
+}
